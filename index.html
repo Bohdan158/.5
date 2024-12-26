@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Герой Щита</title>
+  <style>
+    .container {
+      display: grid;
+      grid-template-areas: 
+        "header header header"
+        "small-left content right"
+        "large-left content right"
+        "large-left center right"
+        "footer footer footer";
+      grid-template-columns: 1fr 2fr 1fr;
+      grid-template-rows: auto auto 1fr auto auto;
+      gap: 5px;
+    }
+    .header { 
+      grid-area: header; 
+      background: lightblue; 
+      text-align: right; 
+      padding: 10px; 
+    }
+    .small-left { 
+      grid-area: small-left; 
+      background: lightgreen; 
+      padding: 10px;
+      text-align: right;
+    }
+    .large-left { 
+      grid-area: large-left; 
+      background: peachpuff; 
+      padding: 10px;
+      text-align: right;
+    }
+    .content { 
+      grid-area: content; 
+      background: white; 
+      text-align: center; 
+      padding: 10px; 
+    }
+    .content img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+    }
+    .right { 
+      grid-area: right; 
+      background: peachpuff; 
+      padding: 10px;
+      text-align: right;
+    }
+    .center { 
+      grid-area: center; 
+      background: lightgreen; 
+      text-align: center; 
+      padding: 10px; 
+    }
+    .footer { 
+      grid-area: footer; 
+      background: lightblue; 
+      text-align: right; 
+      padding: 10px; 
+    }
+    h1 {
+      margin: 0;
+    }
+    p {
+      font-size: 14px;
+    }
+    @media (max-width: 768px) {
+      .container {
+        grid-template-columns: 1fr;
+        grid-template-areas: 
+          "header"
+          "content"
+          "small-left"
+          "large-left"
+          "right"
+          "center"
+          "footer";
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Аніме «Герой Щита»</h1>
+    </div>
+    <div class="small-left" id="block1">
+      <h2>Сюжет</h2>
+      <p>«Герой Щита» розповідає про Наофумі Іватані, молодого чоловіка, який був викликаний у фантастичний світ разом з трьома іншими героями.</p>
+    </div>
+     <div class="content" id="block2">
+      <h2>Головні Персонажі</h2>
+      <ul>
+        <li><strong>Наофумі Іватані:</strong> Головний герой, який стає героєм щита.</li>
+        <li><strong>Рафталія:</strong> Його вірний союзник.</li>
+        <li><strong>Мелті:</strong> Принцеса, яка підтримує Наофумі.</li>
+      </ul>
+    </div>
+     <div class="large-left" id="block3">
+      <h3>Обчислення площі овала</h3>
+      <label for="semiMajor">Піввісь a:</label>
+      <input type="number" id="semiMajor" value="5">
+      <label for="semiMinor">Піввісь b:</label>
+      <input type="number" id="semiMinor" value="3">
+      <button id="calculateOval">Обчислити площу овала</button>
+      <div id="ovalArea"></div>
+      <h3>Підрахунок слів</h3>
+      <input type="text" id="wordInput" placeholder="Введіть текст для підрахунку слів">
+      <button onclick="countWords()">Підрахувати слова</button>
+      <p id="wordCountResult"></p>
+    </div>
+    <div class="right" id="block4">
+      <h2>Тематика</h2>
+      <p>Теми зради, надії, боротьби зі стереотипами.</p>
+    </div>
+    <div class="center" id="block5">
+      <h2>Атмосфера</h2>
+      <p>Світ, сповнений інтриг та політичних змов.</p>
+    </div>
+    <div class="footer" id="block6">
+      <p>&copy; Аніме «Герой Щита»</p>
+    </div>
+  </div>
+  <div class="edit-controls">
+    <h3>Редагування блоків</h3>
+    <label for="blockSelect">Оберіть блок для редагування:</label>
+    <select id="blockSelect">
+      <option value="1">Header</option>
+      <option value="2">Small Left</option>
+      <option value="3">Large Left</option>
+      <option value="4">Content</option>
+      <option value="5">Right</option>
+      <option value="6">Center</option>
+      <option value="7">Footer</option>
+    </select>
+    <br>
+    <textarea id="blockText" placeholder="Введіть новий вміст"></textarea>
+    <br>
+    <button onclick="saveBlockContent()">Зберегти блок</button>
+    <button onclick="clearAllBlocks()">Очистити всі блоки</button>
+  </div>
+  <div class="alignment-controls">
+    <h3>Налаштування вирівнювання</h3>
+    <label><input type="checkbox" id="alignBlock3"> Блок «3»</label><br>
+    <label><input type="checkbox" id="alignBlock4"> Блок «4»</label><br>
+    <label><input type="checkbox" id="alignBlock5"> Блок «5»</label><br>
+    <button onclick="applyAlignment()">Застосувати</button>
+  </div>
+  <script>
+    // Збереження редагованих блоків
+    function saveBlockContent() {
+      const selectedBlock = document.getElementById('blockSelect').value;
+      const text = document.getElementById('blockText').value;
+      document.getElementById('block' + selectedBlock).innerHTML = text;
+      localStorage.setItem('block' + selectedBlock, text);
+    }
+    // Відновлення блоків при завантаженні
+    window.onload = function() {
+      for (let i = 1; i <= 6; i++) {
+        const savedContent = localStorage.getItem('block' + i);
+        if (savedContent) {
+          document.getElementById('block' + i).innerHTML = savedContent;
+        }
+      }
+    };
+    // Очищення всіх блоків
+    function clearAllBlocks() {
+      for (let i = 1; i <= 6; i++) {
+        document.getElementById('block' + i).innerHTML = '';
+        localStorage.removeItem('block' + i);
+      }
+    }
+    // Обчислення площі овала
+    function calculateOvalArea() {
+      let a = document.getElementById('semiMajor').value;
+      let b = document.getElementById('semiMinor').value;
+      let area = Math.PI * a * b;
+      document.getElementById('ovalArea').innerText = `Площа овала: ${area.toFixed(2)} одиниць площі.`;
+    }
+    document.getElementById('calculateOval').onclick = calculateOvalArea;
+    // Підрахунок слів
+    function countWords() {
+      let text = document.getElementById('wordInput').value.trim();
+      let wordCount = text.split(/\s+/).filter(word => word).length;
+      document.getElementById('wordCountResult').innerText = `Кількість слів: ${wordCount}`;
+      document.cookie = `wordCount=${wordCount};path=/`;
+    }
+    // Вирівнювання по лівому краю
+     function applyAlignment() {
+      const blocks = [
+        { id: 'alignBlock3', selector: '#block3' },
+        { id: 'alignBlock4', selector: '#block4' },
+        { id: 'alignBlock5', selector: '#block5' }
+      ];
+      blocks.forEach(block => {
+        const checkbox = document.getElementById(block.id);
+        const element = document.querySelector(block.selector);
+        if (checkbox.checked) {
+          element.style.textAlign = 'left';
+          localStorage.setItem(block.id, 'left');
+        } else {
+          element.style.textAlign = '';
+          localStorage.removeItem(block.id);
+        }
+      });
+    }
+  </script>
+</body>
+</html>
